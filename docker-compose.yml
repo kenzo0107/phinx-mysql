@@ -1,0 +1,28 @@
+---
+version: '2'
+services:
+
+  db:
+    image: mysql:5.7
+    environment:
+    - MYSQL_ROOT_PASSWORD=rootpass
+    - MYSQL_DATABASE=hogehoge
+    - MYSQL_USER=developer
+    - MYSQL_PASSWORD=pass
+    volumes:
+    - db-data:/var/lib/mysql
+    - ./db/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+    - ./db/initdb.d:/docker-entrypoint-initdb.d
+
+  db-migrate:
+    build: .
+    volumes:
+    - .:/app
+    depends_on:
+    - db
+    links:
+    - db
+
+volumes:
+  db-data:
+    driver: local
